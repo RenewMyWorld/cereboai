@@ -1,0 +1,35 @@
+:root {
+  /* Default Theme (current space theme) */
+  .theme-default {
+    --bg-primary: transparent;
+    --bg-secondary: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Light Theme */
+  .theme-light {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f1f5f9;
+    --text-primary: #000000;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+  }
+
+  /* Dark Theme */
+  .theme-dark {
+    --bg-primary: #000000;
+    --bg-secondary: #1e293b;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+  }
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
+} 

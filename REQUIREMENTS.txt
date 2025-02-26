@@ -1,0 +1,173 @@
+AI AGENT MARKETPLACE - INSTALLATION REQUIREMENTS
+
+================================================================================
+1. SYSTEM REQUIREMENTS
+================================================================================
+
+HARDWARE SPECIFICATIONS
+-----------------------
+Minimum:
+- Processor: Intel Core i5 or AMD Ryzen 5 (4 cores)
+- RAM: 8 GB
+- Storage: 10 GB free disk space
+
+Recommended:
+- Processor: Intel Core i7 or AMD Ryzen 7 (6+ cores)
+- RAM: 16 GB or higher
+- Storage: SSD with 20 GB free disk space
+
+SUPPORTED OPERATING SYSTEMS
+---------------------------
+- Windows 10 (64-bit) or later
+- macOS 10.15 (Catalina) or later
+- Linux (Ubuntu 20.04 LTS or later, Fedora 33 or later)
+
+================================================================================
+2. SOFTWARE DEPENDENCIES
+================================================================================
+
+REQUIRED INSTALLATIONS
+---------------------
+1. Node.js
+   - Version: 18.0.0 or later
+   - Verification: 
+     * Run 'node --version' (should return v18.x.x or higher)
+     * Run 'npm --version' (should return 9.x.x or higher)
+   - Download: https://nodejs.org/
+
+2. npm
+   - Version: 9.0.0 or later
+
+3. Git
+   - Version: 2.30 or later
+   - Verification: Run 'git --version'
+   - Download: https://git-scm.com/
+
+OPTIONAL DEPENDENCIES
+--------------------
+- Yarn (Alternative package manager, version 1.22+)
+- nvm (Node Version Manager)
+
+================================================================================
+3. BROWSER COMPATIBILITY
+================================================================================
+- Google Chrome (Latest version)
+- Mozilla Firefox (Latest version)
+- Microsoft Edge (Latest version)
+- Safari (Latest version)
+- Opera (Latest version)
+
+================================================================================
+4. NETWORK REQUIREMENTS
+================================================================================
+- Internet Connection: 
+  * Minimum: Broadband (10 Mbps)
+  * Recommended: Stable broadband/fiber (50 Mbps+)
+- Open Ports: 
+  * 5173 (Vite development server)
+  * 4173 (Vite preview server)
+
+================================================================================
+5. INSTALLATION STEPS
+================================================================================
+
+WINDOWS INSTALLATION
+-------------------
+1. Download and install Node.js from official website
+2. Open PowerShell as Administrator
+3. Clone repository: 
+   git clone https://github.com/your-repo/project.git
+   cd project
+4. Install dependencies: npm install
+5. Start development server: npm run dev
+
+MACOS/LINUX INSTALLATION
+-----------------------
+1. Install Node.js via homebrew or official package
+2. Open Terminal
+3. Clone repository:
+   git clone https://github.com/your-repo/project.git
+   cd project
+4. Install dependencies: npm install
+5. Start development server: npm run dev
+
+================================================================================
+6. REQUIRED NPM PACKAGES
+================================================================================
+- React (^18.2.0)
+- Vite (^4.3.0)
+- TypeScript (^5.0.0)
+- Tailwind CSS (^3.3.0)
+- Framer Motion (^10.12.0)
+- Lucide React (^0.181.0)
+
+================================================================================
+7. TROUBLESHOOTING
+================================================================================
+- Ensure Node.js and npm versions are compatible
+- Check firewall/antivirus settings
+- Temporarily disable network restrictions during installation
+- Run 'npm audit' to check for security vulnerabilities
+
+================================================================================
+8. ENVIRONMENT SETUP
+================================================================================
+Create a .env file with the following format:
+VITE_API_BASE_URL=https://api.example.com
+VITE_API_KEY=your_api_key_here
+
+================================================================================
+ADDITIONAL RESOURCES
+================================================================================
+- Full documentation: Refer to README.md
+- Project repository: https://github.com/your-repo/project
+
+================================================================================
+VERSION INFORMATION
+================================================================================
+Current Version: 1.0.0
+Last Updated: February 2025
+Repository: https://github.com/ai-agent-marketplace/marketplace
+
+================================================================================
+RECOMMENDED IDEs/EDITORS
+================================================================================
+- Visual Studio Code
+- WebStorm
+- Sublime Text
+- Atom
+
+================================================================================
+REQUIRED VS CODE EXTENSIONS
+================================================================================
+- ESLint
+- Prettier
+- TypeScript
+- Tailwind CSS IntelliSense
+- React Developer Tools
+
+================================================================================
+DETAILED INSTALLATION GUIDE
+================================================================================
+- Detailed Installation Guide: INSTALLATION.md
+- Project README: README.md
+
+================================================================================
+CONTINUOUS INTEGRATION PLATFORMS
+================================================================================
+- GitHub Actions
+- GitLab CI
+- Jenkins
+- CircleCI
+
+================================================================================
+SUPPORT
+================================================================================
+For issues or questions, open an issue:
+https://github.com/ai-agent-marketplace/marketplace/issues
+
+Maintained by: Codeium Engineering Team
+
+---
+Last Updated: February 2025
+Version: 1.0.0

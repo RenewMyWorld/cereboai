@@ -12,6 +12,8 @@ import AgentDetailPage from './pages/AgentDetailPage';
 import UseCasePage from './pages/UseCasePage';
 import AuthWrapper from './components/auth/AuthWrapper';
 import FloatingToolbar from './components/FloatingToolbar';
+import Signup from './pages/Signup';
+import WelcomePage from './pages/WelcomePage';
 import './styles/globals.css';
 
 function App() {
@@ -32,6 +34,7 @@ function App() {
                 <Route path="/developer/:id" element={<DeveloperProfilePage />} />
                 <Route path="/agent/:id" element={<AgentDetailPage />} />
                 <Route path="/usecase" element={<UseCasePage />} />
+                <Route path="/signup" element={<Signup />} />
               </Routes>
             </main>
             <Footer />

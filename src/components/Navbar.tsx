@@ -39,12 +39,18 @@ const Navbar = () => {
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-            {/* Sign In Button */}
+            {/* Sign In and Sign Up Buttons */}
             <Link
               to="/signin"
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
               Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors ml-2"
+            >
+              Sign Up
             </Link>
           </div>
 
@@ -97,6 +103,12 @@ const Navbar = () => {
               className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
               Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors mt-2"
+            >
+              Sign Up
             </Link>
           </div>
         </div>

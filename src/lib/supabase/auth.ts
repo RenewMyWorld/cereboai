@@ -1,111 +1,191 @@
-import { createClient } from '@supabase/supabase-js'
+import { useState, useEffect } from 'react'
+import { createClient, User, Session } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Initialize Supabase clients
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL, 
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
+const supabaseAdmin = createClient(
+  import.meta.env.VITE_SUPABASE_URL, 
+  import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
+)
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-export async function signUp(email: string, password: string) {
-  // First, sign up with Supabase Auth
-  const { data, error: authError } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        signup_source: 'web_app',
-        signup_timestamp: new Date().toISOString()
+// Enhanced user creation function
+export async function adminCreateUser(email: string, password: string) {
+  try {
+    // Attempt to create user via Supabase admin method
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: {
+        username: `user_${Date.now()}`,
+        role: 'Standard Member'
       }
+    })
+
+    if (error) {
+      console.error('User Creation Error:', error)
+      throw error
     }
-  })
 
-  if (authError) {
-    console.error('Authentication Signup Error:', authError)
-    throw authError
-  }
+    // Create profile in public.profiles
+    const { error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .upsert({
+        id: data.user.id,
+        username: `user_${Date.now()}`,
+        email: data.user.email,
+        role: 'Standard Member'
+      })
 
-  // If user is created, try to insert additional user data
-  if (data.user) {
-    try {
-      // Generate a username from email
-      const username = email.split('@')[0].toLowerCase()
+    if (profileError) {
+      console.error('Profile Creation Error:', profileError)
       
-      const { error: insertError } = await supabase
-        .from('users')
-        .insert({
-          id: data.user.id,
-          email: data.user.email,
-          username: username,
-          membership_tier: 'Standard Member', // Default tier
-          created_at: new Date().toISOString(),
-          storage_limit: 10 // Default storage limit
-        })
+      // Delete the auth user if profile creation fails
+      await supabaseAdmin.auth.admin.deleteUser(data.user.id)
+      
+      throw profileError
+    }
 
-      if (insertError) {
-        console.error('Database Insertion Error:', insertError)
+    return { 
+      user: data.user, 
+      message: 'User created successfully' 
+    }
+  } catch (error) {
+    console.error('Comprehensive User Creation Failed:', error)
+    throw error
+  }
+}
+
+// Existing useAuth hook
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<{ message: string } | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    // Get current session
+    const fetchSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
         
-        // If user already exists, throw a specific error
-        if (insertError.code === '23505') {
-          // Unique constraint violation
-          const errorMessage = insertError.message.includes('username')
-            ? 'Username is already taken'
-            : 'An account with this email already exists'
-          
-          // Attempt to delete the auth user
-          await supabase.auth.admin.deleteUser(data.user.id)
-          
-          throw new Error(errorMessage)
+        if (error) {
+          setError({ message: error.message })
+          setUser(null)
+        } else {
+          setSession(session)
+          setUser(session?.user || null)
         }
-        
-        throw insertError
+      } catch (err: any) {
+        setError({ message: err.message || 'An unexpected error occurred' })
+        setUser(null)
+      } finally {
+        setLoading(false)
       }
-    } catch (dbError) {
-      console.error('User Creation Error:', dbError)
-      throw dbError
+    }
+
+    fetchSession()
+
+    // Listen to auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        try {
+          setUser(session?.user || null)
+          setSession(session)
+          setError(null)
+        } catch (err: any) {
+          setError({ message: err.message || 'An authentication error occurred' })
+        }
+      }
+    )
+
+    // Cleanup subscription
+    return () => {
+      authListener.subscription.unsubscribe()
+    }
+  }, [])
+
+  // Authentication methods
+  const signUp = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username: email.split('@')[0],
+            role: 'Standard Member'
+          }
+        }
+      })
+
+      if (error) {
+        setError({ message: error.message })
+        return { data: null, error, user: null }
+      }
+
+      return { data, error: null, user: data.user }
+    } catch (err: any) {
+      const error = { message: err.message }
+      setError(error)
+      return { data: null, error, user: null }
     }
   }
 
-  return data
-}
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
 
-export async function signIn(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password
-  })
+      if (error) {
+        setError({ message: error.message })
+        return { data: null, error, user: null }
+      }
 
-  if (error) {
-    console.error('Signin error:', error.message)
-    throw error
+      return { data, error: null, user: data.user }
+    } catch (err: any) {
+      const error = { message: err.message }
+      setError(error)
+      return { data: null, error, user: null }
+    }
   }
 
-  return data
-}
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        setError({ message: error.message })
+        return { error }
+      }
 
-export async function signOut() {
-  const { error } = await supabase.auth.signOut()
-  
-  if (error) {
-    console.error('Signout error:', error.message)
-    throw error
+      setUser(null)
+      setSession(null)
+      return { error: null }
+    } catch (err: any) {
+      const error = { message: err.message }
+      setError(error)
+      return { error }
+    }
+  }
+
+  return {
+    user,
+    loading,
+    error,
+    session,
+    signUp,
+    signIn,
+    signOut,
+    adminCreateUser  // Expose admin user creation method
   }
 }
 
-export async function checkUsernameAvailability(username: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('username')
-    .eq('username', username)
-    .single()
-
-  if (error) {
-    // If no user found, username is available
-    return !error
-  }
-
-  // If data exists, username is taken
-  return !data
-}
+// Export Supabase clients for direct use if needed
+export { supabase, supabaseAdmin }

@@ -10,7 +10,7 @@ import AboutPage from './pages/AboutPage';
 import DeveloperProfilePage from './pages/DeveloperProfilePage';
 import AgentDetailPage from './pages/AgentDetailPage';
 import UseCasePage from './pages/UseCasePage';
-import AuthWrapper from './components/auth/AuthWrapper';
+import AuthWrapper from './lib/supabase/AuthWrapper';
 import FloatingToolbar from './components/FloatingToolbar';
 import Signup from './pages/Signup';
 import WelcomePage from './pages/WelcomePage';

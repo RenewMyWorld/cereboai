@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase/auth'
+import { supabase } from '../lib/supabase/auth'
 
 const WelcomePage: React.FC = () => {
   const navigate = useNavigate()
@@ -8,11 +8,18 @@ const WelcomePage: React.FC = () => {
 
   React.useEffect(() => {
     const fetchUserData = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setUserName(user.email?.split('@')[0] || 'Developer')
-      } else {
-        // Redirect to login if no user
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (error) throw error
+
+        if (user) {
+          setUserName(user.email?.split('@')[0] || 'Developer')
+        } else {
+          // Redirect to login if no user
+          navigate('/login')
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error)
         navigate('/login')
       }
     }
